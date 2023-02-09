@@ -5,7 +5,7 @@ pipeline {
         stage('Build') {
             steps {
               sh '''
-                docker build -t abdulwahabshukri/ttd-frontend:jenkins-${GITHUB_RUN_ID} .
+                docker build -t abdulwahabshukri/jenkins-frontend:jenkins-${GITHUB_RUN_ID} .
               '''
             }
         }
@@ -14,7 +14,7 @@ pipeline {
                withCredentials([usernamePassword(credentialsId: 'dockerhubcredentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
                 sh '''
                 docker login -u $USERNAME -p $PASSWORD
-                docker push abdulwahabshukri/ttd-frontend:jenkins-${GITHUB_RUN_ID}
+                docker push abdulwahabshukri/jenkins-frontend:jenkins-${GITHUB_RUN_ID}
                 '''
               }
             }
@@ -22,9 +22,9 @@ pipeline {
         stage('deploy') {
             steps {
                 sh '''
-                docker stop ttd-frontend || true
-                docker rm -f ttd-frontend || true
-                docker run -p3000:80 -d --name ttd-frontend abdulwahabshukri/ttd-frontend:jenkins-${GITHUB_RUN_ID}
+                docker stop jenkins-frontend || true
+                docker rm -f jenkins-frontend || true
+                docker run -p3000:80 -d --name jenkins-frontend abdulwahabshukri/jenkins-frontend:jenkins-${GITHUB_RUN_ID}
                 '''
             }
         }
